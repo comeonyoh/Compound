@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B4288BB25C79DD9003F947A /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4288BA25C79DD9003F947A /* NetworkTests.swift */; };
 		7BA665C525C6D9D1007E3533 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA665C425C6D9D1007E3533 /* AppDelegate.swift */; };
 		7BA665C725C6D9D1007E3533 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA665C625C6D9D1007E3533 /* SceneDelegate.swift */; };
 		7BA665C925C6D9D1007E3533 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA665C825C6D9D1007E3533 /* ViewController.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7B4288BA25C79DD9003F947A /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 		7BA665C125C6D9D1007E3533 /* Compound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Compound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BA665C425C6D9D1007E3533 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7BA665C625C6D9D1007E3533 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			children = (
 				7BA665DD25C6D9D2007E3533 /* Info.plist */,
 				7BA665FD25C6E312007E3533 /* RequestTests.swift */,
+				7B4288BA25C79DD9003F947A /* NetworkTests.swift */,
 			);
 			path = CompoundTests;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B4288BB25C79DD9003F947A /* NetworkTests.swift in Sources */,
 				7BA665FE25C6E312007E3533 /* RequestTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

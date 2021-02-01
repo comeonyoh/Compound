@@ -15,31 +15,36 @@ class ViewController: UIViewController {
         
         super.viewDidLoad()
         
-        queue = RequestQueue()
-        
-        let request1 = Request()
-        let request2 = Request()
-        let request3 = Request()
-
-        request1.task = {
-            $0.cancel()
-        }
-        
-        request2.task = {
-            $0.finish()
-        }
-
-        request3.task = {
-            $0.finish()
-        }
-
-        queue.addOperation(request1)
-        queue.addOperation(request2)
-        queue.addOperation(request3)
-
-        queue.completion = { _, _ in
+        queue = RequestQueue { (queue, error) in
             print("Request completed")
         }
+        
+        let request1 = Request {
+            print("request 1")
+            sleep(2)
+            $0.cancel()
+        }
+
+        let request2 = Request()
+        let request3 = Request {
+            print("request 3")
+            $0.finish()
+        } completed: { (request, error) in
+            print("request 3 finished")
+        }
+
+        request2.task = {
+            print("request 2")
+            $0.finish()
+        }
+        
+        request3.queuePriority = .veryHigh
+
+        print("req1 = \(request1)")
+        print("req2 = \(request2)")
+        print("req3 = \(request3)")
+
+        queue.addOperations([request1, request2, request3], waitUntilFinished: false)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

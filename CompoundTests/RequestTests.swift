@@ -98,8 +98,41 @@ class RequestTests: XCTestCase {
         queue.addOperation(req4)
         
         queue.completion = {
-            _, _ in
+            queue, _ in
+            XCTAssert(queue.progress.fractionCompleted == 1.0)
             print("Completed")
         }
+    }
+    
+    func testCancelRequestQueue() throws {
+        
+        var count = 0
+
+        let queue = RequestQueue { (queue, error) in
+            XCTAssert(error != nil)
+            XCTAssertEqual(count, 0)
+            XCTAssertEqual(error, RequestQueueError.cancel)
+        }
+        
+        let request1 = Request()
+        let request2 = Request()
+        let request3 = Request()
+
+        request1.task = {
+            sleep(1)
+            count += 1
+            $0.finish()
+        }
+        request2.task = {
+            count += 2
+            $0.finish()
+        }
+        request3.task = {
+            count += 3
+            $0.finish()
+        }
+
+        queue.addOperations([request1, request2, request3], waitUntilFinished: false)
+        queue.cancelAllOperations()
     }
 }

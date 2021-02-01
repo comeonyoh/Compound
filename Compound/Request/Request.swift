@@ -21,7 +21,8 @@ protocol RequestLifeCycle {
 public class Request: Operation {
     
     public typealias TaskHandler = (_ request: Request) -> Void
-    
+    public typealias TaskCompletion = (_ request: Request, _ error: Error?) -> Void
+
     private enum State: String {
         
         case ready
@@ -33,10 +34,6 @@ public class Request: Operation {
         }
     }
     
-    public override init() {
-        super.init()
-    }
-    
     private var state: State = .ready {
         
         willSet {
@@ -46,22 +43,35 @@ public class Request: Operation {
         didSet {
             didChangeValue(forKey: oldValue.keyPath)
             didChangeValue(forKey: state.keyPath)
-            
-            if state == .finished && isCancelled == false {
-                self.request(didFinished: self)
-                queue?.requestQueue(didFinished: self)
-            }
         }
     }
     
     public var task: TaskHandler?
+    public var completion: TaskCompletion?
+
+    public override init() {
+        super.init()
+    }
     
+    public init(_ task: TaskHandler?) {
+        self.task = task
+    }
+    
+    public init(_ task: TaskHandler?, completed completion: TaskCompletion?) {
+        self.task = task
+        self.completion = completion
+    }
+
     public weak var queue: RequestQueue?
     
     public override func start() {
 
         guard request(canBegin: self) else {
             cancel()
+            return
+        }
+        
+        guard isCancelled == false else {
             return
         }
         
@@ -72,13 +82,23 @@ public class Request: Operation {
     public override func cancel() {
         
         super.cancel()
+        
         self.state = .finished
+
+        self.task = nil
         request(didCancelled: self)
         queue?.requestQueue(didCancelled: self)
     }
     
     public func finish() {
+
         state = .finished
+
+        completion?(self, nil)
+        completion = nil
+        
+        self.request(didFinished: self)
+        queue?.requestQueue(didFinished: self)
     }
     
     public override func main() {

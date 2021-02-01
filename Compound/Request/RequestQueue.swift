@@ -14,11 +14,15 @@ protocol RequestQueueLifeCycle {
     func requestQueue(didCancelled request: Request)
 }
 
+public enum RequestQueueError: Error {
+    case cancel
+}
+
 public class RequestQueue: OperationQueue {
     
-    public typealias RequestQueueCompletion = (_ queue: RequestQueue, _ error: Error?) -> Void
+    public typealias RequestQueueCompletion = (_ queue: RequestQueue, _ error: RequestQueueError?) -> Void
 
-    var observation: NSKeyValueObservation!
+    private var observation: NSKeyValueObservation!
     
     override init() {
         
@@ -33,6 +37,15 @@ public class RequestQueue: OperationQueue {
             
             self.completion?(self, nil)
         })
+    }
+
+    public convenience init(_ completion: RequestQueueCompletion?) {
+        self.init()
+        self.completion = completion
+    }
+    
+    deinit {
+        observation = nil
     }
     
     public var completion: RequestQueueCompletion?
@@ -55,7 +68,9 @@ public class RequestQueue: OperationQueue {
             $0 is Request ? true : false
         }
         
-        super.addOperations(operations, waitUntilFinished: wait)
+        for operation in operations {
+            addOperation(operation)
+        }
     }
     
     public override func addOperation(_ block: @escaping () -> Void) {
@@ -66,6 +81,16 @@ public class RequestQueue: OperationQueue {
         assertionFailure("NOT SUPPORTED YET")
     }
     
+    public override func cancelAllOperations() {
+        
+        super.cancelAllOperations()
+        
+        guard self.progress.fractionCompleted != 1.0 else {
+            return
+        }
+        
+        completion?(self, RequestQueueError.cancel)
+    }
 }
 
 extension RequestQueue: RequestQueueLifeCycle {
@@ -89,3 +114,4 @@ extension RequestQueue: RequestQueueLifeCycle {
         }
     }
 }
+
