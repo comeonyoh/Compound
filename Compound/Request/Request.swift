@@ -7,8 +7,10 @@
 
 import Foundation
 
+@objc
 protocol RequestLifeCycle {
 
+    @objc
     func request(canBegin request: Request) -> Bool
     func request(didBegin request: Request)
     
@@ -47,7 +49,7 @@ public class Request: Operation {
     }
     
     public var task: TaskHandler?
-    public var completion: TaskCompletion?
+    public var customCompletion: TaskCompletion?
 
     public override init() {
         super.init()
@@ -59,7 +61,7 @@ public class Request: Operation {
     
     public init(_ task: TaskHandler?, completed completion: TaskCompletion?) {
         self.task = task
-        self.completion = completion
+        self.customCompletion = completion
     }
 
     public weak var queue: RequestQueue?
@@ -83,9 +85,9 @@ public class Request: Operation {
         
         super.cancel()
         
-        self.state = .finished
+        state = .finished
 
-        self.task = nil
+        task = nil
         request(didCancelled: self)
         queue?.requestQueue(didCancelled: self)
     }
@@ -94,10 +96,10 @@ public class Request: Operation {
 
         state = .finished
 
-        completion?(self, nil)
-        completion = nil
+        customCompletion?(self, nil)
+        customCompletion = nil
         
-        self.request(didFinished: self)
+        request(didFinished: self)
         queue?.requestQueue(didFinished: self)
     }
     

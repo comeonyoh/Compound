@@ -20,32 +20,33 @@ class RequestTests: XCTestCase {
 
     func testMultipleRequestsSequentially() throws {
 
-        var number = 10
+        var number1 = 10
+        var number2 = 10
 
         let queue1 = RequestQueue()
         let queue2 = RequestQueue()
         
         let req1 = Request()
         req1.task = {
-            number += 5
+            number1 += 5
             $0.finish()
         }
         
         let req2 = Request()
-        req1.task = {
-            number *= 10
+        req2.task = {
+            number1 *= 10
             $0.finish()
         }
         
         let req3 = Request()
-        req1.task = {
-            number += 5
+        req3.task = {
+            number2 += 5
             $0.finish()
         }
         
         let req4 = Request()
-        req1.task = {
-            number *= 10
+        req4.task = {
+            number2 *= 10
             $0.finish()
         }
 
@@ -56,11 +57,11 @@ class RequestTests: XCTestCase {
         queue2.addOperation(req3)
 
         queue1.completion = { _, _ in
-            XCTAssert(number == 150)
+            XCTAssert(number1 == 150)
         }
 
         queue2.completion = { _, _ in
-            XCTAssert(number == 105)
+            XCTAssert(number2 == 105)
         }
     }
     

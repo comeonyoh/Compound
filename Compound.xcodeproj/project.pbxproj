@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B2B091C25C8E49400B01C31 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B091B25C8E49400B01C31 /* Requests.swift */; };
+		7B2B092025C8E92700B01C31 /* RequestsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B091F25C8E92700B01C31 /* RequestsTests.swift */; };
 		7B4288BB25C79DD9003F947A /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4288BA25C79DD9003F947A /* NetworkTests.swift */; };
 		7BA665C525C6D9D1007E3533 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA665C425C6D9D1007E3533 /* AppDelegate.swift */; };
 		7BA665C725C6D9D1007E3533 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA665C625C6D9D1007E3533 /* SceneDelegate.swift */; };
@@ -30,6 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7B2B091B25C8E49400B01C31 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
+		7B2B091F25C8E92700B01C31 /* RequestsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsTests.swift; sourceTree = "<group>"; };
 		7B4288BA25C79DD9003F947A /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 		7BA665C125C6D9D1007E3533 /* Compound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Compound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BA665C425C6D9D1007E3533 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -68,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				7BA665F925C6DBFE007E3533 /* Request.swift */,
+				7B2B091B25C8E49400B01C31 /* Requests.swift */,
 				7BA6660325C6E333007E3533 /* RequestQueue.swift */,
 			);
 			path = Request;
@@ -111,6 +116,7 @@
 			children = (
 				7BA665DD25C6D9D2007E3533 /* Info.plist */,
 				7BA665FD25C6E312007E3533 /* RequestTests.swift */,
+				7B2B091F25C8E92700B01C31 /* RequestsTests.swift */,
 				7B4288BA25C79DD9003F947A /* NetworkTests.swift */,
 			);
 			path = CompoundTests;
@@ -219,6 +225,7 @@
 				7BA665C925C6D9D1007E3533 /* ViewController.swift in Sources */,
 				7BA665FA25C6DBFE007E3533 /* Request.swift in Sources */,
 				7BA6660425C6E333007E3533 /* RequestQueue.swift in Sources */,
+				7B2B091C25C8E49400B01C31 /* Requests.swift in Sources */,
 				7BA665C525C6D9D1007E3533 /* AppDelegate.swift in Sources */,
 				7BA665C725C6D9D1007E3533 /* SceneDelegate.swift in Sources */,
 			);
@@ -230,6 +237,7 @@
 			files = (
 				7B4288BB25C79DD9003F947A /* NetworkTests.swift in Sources */,
 				7BA665FE25C6E312007E3533 /* RequestTests.swift in Sources */,
+				7B2B092025C8E92700B01C31 /* RequestsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
