@@ -146,7 +146,7 @@ extension Request: RequestLifeCycle {
     }
     
     func request(didCancelled request: Request) {
-
+        parent?.request(didCancelled: request)
     }
 }
 

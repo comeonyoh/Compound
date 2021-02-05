@@ -11,6 +11,8 @@ public class Requests: Request, ExpressibleByArrayLiteral {
     
     public private(set) var requests: [Request]!
     
+    private var cancelledRequests = [Request]()
+
     public func add(_ request: Request) {
         requests.append(request)
         request.parent = self
@@ -27,6 +29,17 @@ public class Requests: Request, ExpressibleByArrayLiteral {
         
         for element in elements {
             add(element)
+        }
+    }
+    
+    public override func start() {
+        
+        if cancelledRequests.count > 0 {
+            cancel()
+        }
+        else {
+            super.start()
+            finish()
         }
     }
 }
@@ -61,6 +74,9 @@ extension Requests {
     }
     
     override func request(didFinished request: Request) {
-        
+    }
+    
+    override func request(didCancelled request: Request) {
+        cancelledRequests.append(request)
     }
 }
