@@ -25,6 +25,8 @@ public class Request: Operation {
     public typealias TaskHandler = (_ request: Request) -> Void
     public typealias TaskCompletion = (_ request: Request, _ error: Error?) -> Void
 
+    public weak var parent: Requests?
+    
     private enum State: String {
         
         case ready
@@ -130,7 +132,8 @@ extension Request: RequestLifeCycle {
     }
     
     func request(didBegin request: Request) {
-
+        print("Request \(String(describing: request.name)) begin")
+        parent?.request(didBegin: request)
     }
     
     func request(canFinished request: Request) -> Bool {
@@ -138,7 +141,8 @@ extension Request: RequestLifeCycle {
     }
     
     func request(didFinished request: Request) {
-
+        print("Request \(request.name) finished")
+        parent?.request(didFinished: request)
     }
     
     func request(didCancelled request: Request) {

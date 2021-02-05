@@ -7,12 +7,13 @@
 
 import Foundation
 
-class Requests: Request, ExpressibleByArrayLiteral {
+public class Requests: Request, ExpressibleByArrayLiteral {
     
-    private var requests: [Request]!
+    public private(set) var requests: [Request]!
     
     public func add(_ request: Request) {
         requests.append(request)
+        request.parent = self
     }
     
     override init() {
@@ -20,35 +21,46 @@ class Requests: Request, ExpressibleByArrayLiteral {
         self.requests = [Request]()
     }
     
-    required init(arrayLiteral elements: Request...) {
+    public required init(arrayLiteral elements: Request...) {
         super.init()
-        self.requests = elements
+        self.requests = [Request]()
+        
+        for element in elements {
+            add(element)
+        }
     }
-    
 }
 
 extension Requests: Collection {
     
-    func index(after i: Int) -> Int {
+    public func index(after i: Int) -> Int {
         requests.index(after: i)
     }
     
-    subscript(position: Int) -> Request {
+    public subscript(position: Int) -> Request {
         requests[position]
     }
     
-    var startIndex: Int {
+    public var startIndex: Int {
         requests.startIndex
     }
     
-    var endIndex: Int {
+    public var endIndex: Int {
         requests.endIndex
+    }
+    
+    public var count: Int {
+        requests.count
     }
 }
 
 extension Requests {
     
     override func request(didBegin request: Request) {
+        
+    }
+    
+    override func request(didFinished request: Request) {
         
     }
 }

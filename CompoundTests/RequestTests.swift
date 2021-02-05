@@ -38,6 +38,13 @@ class RequestTests: XCTestCase {
             $0.finish()
         }
         
+        queue1.addOperation(req1)
+        queue1.addOperation(req2)
+        queue1.completion = { _, _ in
+            print("Number1 = \(number1)")
+            XCTAssert(number1 == 150)
+        }
+        
         let req3 = Request()
         req3.task = {
             number2 += 5
@@ -50,17 +57,10 @@ class RequestTests: XCTestCase {
             $0.finish()
         }
 
-        queue1.addOperation(req1)
-        queue1.addOperation(req2)
-
         queue2.addOperation(req4)
         queue2.addOperation(req3)
-
-        queue1.completion = { _, _ in
-            XCTAssert(number1 == 150)
-        }
-
         queue2.completion = { _, _ in
+            print("Number2 = \(number2)")
             XCTAssert(number2 == 105)
         }
     }
@@ -86,7 +86,10 @@ class RequestTests: XCTestCase {
             
             XCTAssert($0.queue?.progress.fractionCompleted == 0.5)
             $0.cancel()
-            XCTAssert($0.queue?.progress.fractionCompleted == 0.75)
+            let activeQueue = $0.queue
+            DispatchQueue.main.async {
+                XCTAssert(activeQueue?.progress.fractionCompleted == 0.75)
+            }
         }
         
         req4.task = {

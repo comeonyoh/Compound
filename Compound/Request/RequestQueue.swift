@@ -64,8 +64,15 @@ public class RequestQueue: OperationQueue {
     
     public override func addOperations(_ ops: [Operation], waitUntilFinished wait: Bool) {
         
-        let operations = ops.filter {
+        var operations = ops.filter {
             $0 is Request ? true : false
+        }
+        
+        operations.forEach {
+            
+            if let requests = $0 as? Requests {
+                operations.insert(contentsOf: requests.requests, at: operations.firstIndex(of: requests)!)
+            }
         }
         
         for operation in operations {

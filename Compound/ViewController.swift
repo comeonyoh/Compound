@@ -19,7 +19,6 @@ class ViewController: UIViewController {
             print("Request completed")
         }
         
-        
         let request1 = Request {
             print("request1")
             $0.finish()
@@ -30,16 +29,22 @@ class ViewController: UIViewController {
             $0.finish()
         }
         
-        let requests: Requests = [request1, request2]
+        request1.name = "NAME1"
+        request2.name = "NAME2"
         
+        let requests: Requests = [request1, request2]
+//        queue.addOperations([requests], waitUntilFinished: false)
+
         requests.task = {
             _ in
+            print("requests")
         }
-        
+
         let request3 = Request {
             print("request3")
             $0.finish()
         }
+        request3.name = "NAME3"
 
         queue.addOperations([requests, request3], waitUntilFinished: false)
     }
