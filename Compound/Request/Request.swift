@@ -10,6 +10,8 @@ import Foundation
 @objc
 protocol RequestLifeCycle {
 
+    func request(willAdded request: Request)
+
     @objc
     func request(canBegin request: Request) -> Bool
     func request(didBegin request: Request)
@@ -25,6 +27,8 @@ public class Request: Operation {
     public typealias TaskHandler = (_ request: Request) -> Void
     public typealias TaskCompletion = (_ request: Request, _ error: Error?) -> Void
 
+    public private(set) var isAddedOnQueue: Bool = false
+    
     public weak var parent: Requests?
     
     private enum State: String {
@@ -127,6 +131,10 @@ public class Request: Operation {
 
 extension Request: RequestLifeCycle {
     
+    func request(willAdded request: Request) {
+        isAddedOnQueue = true
+    }
+
     func request(canBegin request: Request) -> Bool {
         true
     }
@@ -141,7 +149,7 @@ extension Request: RequestLifeCycle {
     }
     
     func request(didFinished request: Request) {
-        print("Request \(request.name) finished")
+        print("Request \(String(describing: request.name)) finished")
         parent?.request(didFinished: request)
     }
     

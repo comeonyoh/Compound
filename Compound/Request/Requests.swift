@@ -13,6 +13,8 @@ public class Requests: Request, ExpressibleByArrayLiteral {
     
     private var cancelledRequests = [Request]()
 
+    private var dictionary = [String: Any]()
+    
     public func add(_ request: Request) {
         requests.append(request)
         request.parent = self
@@ -40,6 +42,16 @@ public class Requests: Request, ExpressibleByArrayLiteral {
         else {
             super.start()
             finish()
+        }
+    }
+    
+    subscript(key: String) -> Any? {
+        
+        set {
+            dictionary[key] = newValue
+        }
+        get {
+            dictionary[key]
         }
     }
 }
@@ -70,7 +82,6 @@ extension Requests: Collection {
 extension Requests {
     
     override func request(didBegin request: Request) {
-        
     }
     
     override func request(didFinished request: Request) {

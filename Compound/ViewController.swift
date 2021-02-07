@@ -23,6 +23,7 @@ class ViewController: UIViewController {
         let request1 = Request {
             print("request1")
             number += 5
+            $0.parent?["number"] = number
             $0.finish()
         }
         
@@ -36,6 +37,7 @@ class ViewController: UIViewController {
         request2.name = "NAME2"
         
         let requests: Requests = [request1, request2]
+        queue.addOperation(requests)
 
         let request3 = Request {
             print("request3")

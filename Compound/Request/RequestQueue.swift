@@ -56,8 +56,20 @@ public class RequestQueue: OperationQueue {
             return
         }
         
+        guard operation.isAddedOnQueue == false else {
+            return
+        }
+        
+        if let requests = operation as? Requests {
+            
+            for request in requests.requests {
+                addOperation(request)
+            }
+        }
+        
         operation.queue = self
         updateProgress(true)
+        operation.request(willAdded: operation)
 
         super.addOperation(operation)
     }
