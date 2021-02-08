@@ -12,6 +12,12 @@ public class Requests: Request, ExpressibleByArrayLiteral {
     public private(set) var requests: [Request]!
     
     private var dictionary = [String: Any]()
+        
+    public typealias CancelValidator = (_ request: Request, _ error: Error?) -> Bool
+
+    //  This will give you second change whether keep goint or not when one of the request in requests has been failed.
+    //  Return 'false' when you want the error not affect this requests.
+    public var cancelValidator: CancelValidator?
     
     public func add(_ request: Request) {
         requests.append(request)
@@ -33,9 +39,9 @@ public class Requests: Request, ExpressibleByArrayLiteral {
     }
     
     public override func start() {
-        
+
         super.start()
-        deferredCancel ? cancel() : finish()
+        deferredCancel == true && isCancelled == false ? cancel(RequestError.skip) : finish()
     }
     
     subscript(key: String) -> Any? {
@@ -82,6 +88,16 @@ extension Requests {
     
     override func request(didCancelled request: Request, reason error: Error) {
 
+        var canCancelOtherRequests = true
+        
+        if let result = cancelValidator?(request, error) {
+            canCancelOtherRequests = result
+        }
+        
+        guard canCancelOtherRequests == true else {
+            return
+        }
+        
         guard let index = self.firstIndex(of: request) else {
             return
         }

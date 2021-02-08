@@ -11,22 +11,24 @@ protocol RequestQueueLifeCycle {
 
     func requestQueue(didExecuted request: Request)
     func requestQueue(didFinished request: Request)
-    func requestQueue(didCancelled request: Request)
+    func requestQueue(didCancelled request: Request, reason error: Error)
 }
 
 public enum RequestError: Error {
     case unknown
     case cancel
+    case skip
+    case sampleError
 }
 
 public class RequestQueue: OperationQueue {
     
-    public typealias RequestQueueCompletion = (_ queue: RequestQueue, _ error: RequestError?) -> Void
+    public typealias RequestQueueCompletion = (_ queue: RequestQueue, _ error: Error?) -> Void
+
+    private var error: Error?
 
     private var observation: NSKeyValueObservation!
     
-    private var error: RequestError?
-
     public var completion: RequestQueueCompletion?
 
     override init() {
@@ -72,7 +74,7 @@ public class RequestQueue: OperationQueue {
         
         operation.queue = self
         updateProgress(true)
-        operation.request(willAdded: operation)
+        operation.isAddedOnQueue = true
 
         super.addOperation(operation)
     }
@@ -122,13 +124,16 @@ extension RequestQueue: RequestQueueLifeCycle {
     }
 
     func requestQueue(didFinished request: Request) {
-        
+        self.error = nil
     }
  
-    func requestQueue(didCancelled request: Request) {
+    func requestQueue(didCancelled request: Request, reason error: Error) {
         
+        if self.error == nil {
+            self.error = error
+        }
     }
-    
+
     private func updateProgress(_ incremental: Bool?) {
         
         if incremental == true {

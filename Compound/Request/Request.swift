@@ -10,14 +10,10 @@ import Foundation
 @objc
 protocol RequestLifeCycle {
 
-    func request(willAdded request: Request)
-
     func request(canBegin request: Request) -> Bool
     func request(willBegin request: Request)
     
-    func request(canFinished request: Request) -> Bool
     func request(didFinished request: Request)
-    
     func request(didCancelled request: Request, reason error: Error)
 }
 
@@ -27,7 +23,7 @@ public class Request: Operation {
     public typealias TaskCompletion = (_ request: Request, _ error: Error?) -> Void
 
     //  Handling for duplicated insertion on OperationQueue. It is useful when working in Requests circumstances.
-    public private(set) var isAddedOnQueue: Bool = false
+    public internal(set) var isAddedOnQueue: Bool = false
     
     public weak var parent: Requests?
     
@@ -90,11 +86,15 @@ public class Request: Operation {
     internal var deferredCancel: Bool = false
     
     public override func cancel() {
+        cancel(RequestError.cancel)
+    }
+    
+    public func cancel(_ error: Error) {
         
         super.cancel()
-
-        request(didCancelled: self, reason: RequestError.cancel)
-        queue?.requestQueue(didCancelled: self)
+        
+        request(didCancelled: self, reason: error)
+        queue?.requestQueue(didCancelled: self, reason: error)
         
         task = nil
         state = .finished
@@ -124,7 +124,7 @@ public class Request: Operation {
             task?(self)
         }
         else {
-            cancel()
+            cancel(RequestError.skip)
         }
     }
     
@@ -143,10 +143,6 @@ public class Request: Operation {
 
 extension Request: RequestLifeCycle {
     
-    func request(willAdded request: Request) {
-        isAddedOnQueue = true
-    }
-
     func request(canBegin request: Request) -> Bool {
         true
     }
@@ -154,10 +150,6 @@ extension Request: RequestLifeCycle {
     func request(willBegin request: Request) {
         print("Request \(String(describing: request.name)) begin")
         parent?.request(willBegin: request)
-    }
-    
-    func request(canFinished request: Request) -> Bool {
-        true
     }
     
     func request(didFinished request: Request) {

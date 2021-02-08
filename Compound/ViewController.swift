@@ -21,9 +21,8 @@ class ViewController: UIViewController {
         
         let request1 = Request {
             print("request1")
-            $0.cancel()
+            $0.cancel(RequestError.sampleError)
         }
-        
         let request2 = Request {
             print("request2")
             $0.finish()
@@ -33,8 +32,15 @@ class ViewController: UIViewController {
         request2.name = "REQ2"
         
         let requests: Requests = [request1, request2]
+        
         requests.task = { _ in
             print("Requests called")
+        }
+        
+        requests.cancelValidator = {
+            _, _ in
+            
+            return false
         }
         
         queue.addOperation(requests)
