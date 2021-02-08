@@ -14,16 +14,21 @@ protocol RequestQueueLifeCycle {
     func requestQueue(didCancelled request: Request)
 }
 
-public enum RequestQueueError: Error {
+public enum RequestError: Error {
+    case unknown
     case cancel
 }
 
 public class RequestQueue: OperationQueue {
     
-    public typealias RequestQueueCompletion = (_ queue: RequestQueue, _ error: RequestQueueError?) -> Void
+    public typealias RequestQueueCompletion = (_ queue: RequestQueue, _ error: RequestError?) -> Void
 
     private var observation: NSKeyValueObservation!
     
+    private var error: RequestError?
+
+    public var completion: RequestQueueCompletion?
+
     override init() {
         
         super.init()
@@ -35,7 +40,7 @@ public class RequestQueue: OperationQueue {
                 return
             }
             
-            self.completion?(self, nil)
+            self.completion?(self, self.error)
         })
     }
 
@@ -47,8 +52,6 @@ public class RequestQueue: OperationQueue {
     deinit {
         observation = nil
     }
-    
-    public var completion: RequestQueueCompletion?
     
     public override func addOperation(_ op: Operation) {
         
@@ -108,7 +111,7 @@ public class RequestQueue: OperationQueue {
             return
         }
         
-        completion?(self, RequestQueueError.cancel)
+        completion?(self, RequestError.cancel)
     }
 }
 

@@ -12,14 +12,13 @@ protocol RequestLifeCycle {
 
     func request(willAdded request: Request)
 
-    @objc
     func request(canBegin request: Request) -> Bool
-    func request(didBegin request: Request)
+    func request(willBegin request: Request)
     
     func request(canFinished request: Request) -> Bool
     func request(didFinished request: Request)
     
-    func request(didCancelled request: Request)
+    func request(didCancelled request: Request, reason error: Error)
 }
 
 public class Request: Operation {
@@ -27,6 +26,7 @@ public class Request: Operation {
     public typealias TaskHandler = (_ request: Request) -> Void
     public typealias TaskCompletion = (_ request: Request, _ error: Error?) -> Void
 
+    //  Handling for duplicated insertion on OperationQueue. It is useful when working in Requests circumstances.
     public private(set) var isAddedOnQueue: Bool = false
     
     public weak var parent: Requests?
@@ -78,42 +78,54 @@ public class Request: Operation {
             cancel()
             return
         }
-        
+
         guard isCancelled == false else {
             return
         }
         
-        request(didBegin: self)
+        request(willBegin: self)
         super.start()
     }
+    
+    internal var deferredCancel: Bool = false
     
     public override func cancel() {
         
         super.cancel()
+
+        request(didCancelled: self, reason: RequestError.cancel)
+        queue?.requestQueue(didCancelled: self)
         
+        task = nil
         state = .finished
 
-        task = nil
-        request(didCancelled: self)
-        queue?.requestQueue(didCancelled: self)
+        customCompletion?(self, RequestError.cancel)
+        customCompletion = nil
     }
     
     public func finish() {
+
+        request(didFinished: self)
+        queue?.requestQueue(didFinished: self)
 
         state = .finished
 
         customCompletion?(self, nil)
         customCompletion = nil
-        
-        request(didFinished: self)
-        queue?.requestQueue(didFinished: self)
     }
     
     public override func main() {
         
         state = .executing
-        queue?.requestQueue(didExecuted: self)
-        task?(self)
+        
+        if deferredCancel == false {
+            
+            queue?.requestQueue(didExecuted: self)
+            task?(self)
+        }
+        else {
+            cancel()
+        }
     }
     
     public override var isReady: Bool {
@@ -139,9 +151,9 @@ extension Request: RequestLifeCycle {
         true
     }
     
-    func request(didBegin request: Request) {
+    func request(willBegin request: Request) {
         print("Request \(String(describing: request.name)) begin")
-        parent?.request(didBegin: request)
+        parent?.request(willBegin: request)
     }
     
     func request(canFinished request: Request) -> Bool {
@@ -153,8 +165,9 @@ extension Request: RequestLifeCycle {
         parent?.request(didFinished: request)
     }
     
-    func request(didCancelled request: Request) {
-        parent?.request(didCancelled: request)
+    func request(didCancelled request: Request, reason error: Error) {
+        print("Request \(String(describing: request.name)) cancelled")
+        parent?.request(didCancelled: request, reason: error)
     }
 }
 

@@ -11,8 +11,6 @@ public class Requests: Request, ExpressibleByArrayLiteral {
     
     public private(set) var requests: [Request]!
     
-    private var cancelledRequests = [Request]()
-
     private var dictionary = [String: Any]()
     
     public func add(_ request: Request) {
@@ -36,13 +34,8 @@ public class Requests: Request, ExpressibleByArrayLiteral {
     
     public override func start() {
         
-        if cancelledRequests.count > 0 {
-            cancel()
-        }
-        else {
-            super.start()
-            finish()
-        }
+        super.start()
+        deferredCancel ? cancel() : finish()
     }
     
     subscript(key: String) -> Any? {
@@ -81,13 +74,22 @@ extension Requests: Collection {
 
 extension Requests {
     
-    override func request(didBegin request: Request) {
+    override func request(willBegin request: Request) {
     }
     
     override func request(didFinished request: Request) {
     }
     
-    override func request(didCancelled request: Request) {
-        cancelledRequests.append(request)
+    override func request(didCancelled request: Request, reason error: Error) {
+
+        guard let index = self.firstIndex(of: request) else {
+            return
+        }
+        
+        requests[index+1..<count].forEach {
+            $0.deferredCancel = true
+        }
+        
+        self.deferredCancel = true
     }
 }

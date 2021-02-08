@@ -98,7 +98,7 @@ class RequestTests: XCTestCase {
         let queue = RequestQueue { (queue, error) in
             XCTAssert(error != nil)
             XCTAssertEqual(count, 0)
-            XCTAssertEqual(error, RequestQueueError.cancel)
+            XCTAssertEqual(error, RequestError.cancel)
         }
         
         let request1 = Request()
