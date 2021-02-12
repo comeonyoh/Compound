@@ -18,7 +18,6 @@ public enum RequestError: Error {
     case unknown
     case cancel
     case skip
-    case sampleError
 }
 
 public class RequestQueue: OperationQueue {
@@ -34,6 +33,17 @@ public class RequestQueue: OperationQueue {
     override init() {
         
         super.init()
+        prepareForInit()
+    }
+
+    public init(_ completion: RequestQueueCompletion?) {
+        super.init()
+        prepareForInit()
+        self.completion = completion
+    }
+    
+    internal func prepareForInit() {
+        
         self.maxConcurrentOperationCount = 1
         
         observation = observe(\.progress.fractionCompleted, options: [.old, .new], changeHandler: { [weak self] (queue, info) in
@@ -44,11 +54,6 @@ public class RequestQueue: OperationQueue {
             
             self.completion?(self, self.error)
         })
-    }
-
-    public convenience init(_ completion: RequestQueueCompletion?) {
-        self.init()
-        self.completion = completion
     }
     
     deinit {
@@ -80,6 +85,11 @@ public class RequestQueue: OperationQueue {
     }
     
     public override func addOperations(_ ops: [Operation], waitUntilFinished wait: Bool) {
+        
+        addOperations(ops)
+    }
+    
+    public func addOperations(_ ops: [Operation]) {
         
         var operations = ops.filter {
             $0 is Request ? true : false
