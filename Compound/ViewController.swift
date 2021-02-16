@@ -12,7 +12,16 @@ class ViewController: UIViewController {
     var queue: NetworkQueue!
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
+        queue = NetworkQueue(configuration: .default) { queue, error in
+        
+        }
+        
+        let req1 = Network(path: "https://hacker-news.firebaseio.com/v0/item/1000.json")
+        
+        queue.addOperation(req1)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

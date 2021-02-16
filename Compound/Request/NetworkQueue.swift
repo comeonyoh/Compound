@@ -9,7 +9,7 @@ import Foundation
 
 class NetworkQueue: RequestQueue {
 
-    private var session: URLSession!
+    public private(set) var session: URLSession!
     
     private var configuration: URLSessionConfiguration?
     
@@ -23,6 +23,18 @@ class NetworkQueue: RequestQueue {
     }
 }
 
-extension NetworkQueue: URLSessionDelegate {
-     
+extension NetworkQueue: URLSessionDataDelegate {
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        print("didReceive response")
+        completionHandler(.allow)
+    }
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        print("didReceive data")
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        print("didCompleteWithError")
+    }
 }

@@ -12,7 +12,8 @@ protocol RequestLifeCycle {
 
     func request(canBegin request: Request) -> Bool
     func request(willBegin request: Request)
-    
+    func request(didBegan request: Request)
+
     func request(didFinished request: Request)
     func request(didCancelled request: Request, reason error: Error)
 }
@@ -57,11 +58,12 @@ public class Request: Operation {
         super.init()
     }
     
-    public init(_ task: TaskHandler?) {
-        self.task = task
+    public convenience init(task: TaskHandler? = nil) {
+        self.init(task: task, completed: nil)
     }
     
-    public init(_ task: TaskHandler?, completed completion: TaskCompletion?) {
+    public init(task: TaskHandler? = nil, completed completion: TaskCompletion?) {
+        super.init()
         self.task = task
         self.customCompletion = completion
     }
@@ -121,7 +123,7 @@ public class Request: Operation {
         if deferredCancel == false {
             
             queue?.requestQueue(didExecuted: self)
-            task?(self)
+            request(didBegan: self)
         }
         else {
             cancel(RequestError.skip)
@@ -145,6 +147,11 @@ extension Request: RequestLifeCycle {
     
     func request(canBegin request: Request) -> Bool {
         true
+    }
+    
+    func request(didBegan request: Request) {
+        task?(self)
+        parent?.request(didBegan: request)
     }
     
     func request(willBegin request: Request) {
