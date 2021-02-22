@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0199F96F25E383E5007BBA91 /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0199F96E25E383E5007BBA91 /* NetworkTests.swift */; };
 		7B2B091C25C8E49400B01C31 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B091B25C8E49400B01C31 /* Requests.swift */; };
 		7B2B092025C8E92700B01C31 /* RequestsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B091F25C8E92700B01C31 /* RequestsTests.swift */; };
 		7B4C790325D6A74A0078D01C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4C790225D6A74A0078D01C /* Network.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0199F96E25E383E5007BBA91 /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 		7B2B091B25C8E49400B01C31 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		7B2B091F25C8E92700B01C31 /* RequestsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsTests.swift; sourceTree = "<group>"; };
 		7B4C790225D6A74A0078D01C /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				7BA665DD25C6D9D2007E3533 /* Info.plist */,
 				7BA665FD25C6E312007E3533 /* RequestTests.swift */,
 				7B2B091F25C8E92700B01C31 /* RequestsTests.swift */,
+				0199F96E25E383E5007BBA91 /* NetworkTests.swift */,
 			);
 			path = CompoundTests;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0199F96F25E383E5007BBA91 /* NetworkTests.swift in Sources */,
 				7BA665FE25C6E312007E3533 /* RequestTests.swift in Sources */,
 				7B2B092025C8E92700B01C31 /* RequestsTests.swift in Sources */,
 			);

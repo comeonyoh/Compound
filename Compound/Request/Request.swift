@@ -122,8 +122,8 @@ public class Request: Operation {
         
         if deferredCancel == false {
             
-            queue?.requestQueue(didExecuted: self)
             request(didBegan: self)
+            queue?.requestQueue(didBegan: self)
         }
         else {
             cancel(RequestError.skip)

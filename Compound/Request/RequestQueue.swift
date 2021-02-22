@@ -7,9 +7,10 @@
 
 import Foundation
 
+@objc
 protocol RequestQueueLifeCycle {
 
-    func requestQueue(didExecuted request: Request)
+    func requestQueue(didBegan request: Request)
     func requestQueue(didFinished request: Request)
     func requestQueue(didCancelled request: Request, reason error: Error)
 }
@@ -129,7 +130,7 @@ public class RequestQueue: OperationQueue {
 
 extension RequestQueue: RequestQueueLifeCycle {
     
-    func requestQueue(didExecuted request: Request) {
+    func requestQueue(didBegan request: Request) {
         
     }
 

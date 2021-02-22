@@ -9,6 +9,7 @@ import Foundation
 
 class NetworkQueue: RequestQueue {
 
+    private var activeNetwork: Network?
     public private(set) var session: URLSession!
     
     private var configuration: URLSessionConfiguration?
@@ -19,22 +20,42 @@ class NetworkQueue: RequestQueue {
     }
     
     override func prepareForInit() {
+        super.prepareForInit()
         session = URLSession(configuration: configuration ?? URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+    }
+}
+
+extension NetworkQueue {
+    
+    override func requestQueue(didBegan request: Request) {
+        
+        if request is Network {
+            activeNetwork = request as? Network
+        }
+    }
+    
+    override func requestQueue(didFinished request: Request) {
+        super.requestQueue(didFinished: request)
+        activeNetwork = nil
+    }
+    
+    override func requestQueue(didCancelled request: Request, reason error: Error) {
+        super.requestQueue(didCancelled: request, reason: error)
+        activeNetwork = nil
     }
 }
 
 extension NetworkQueue: URLSessionDataDelegate {
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        print("didReceive response")
-        completionHandler(.allow)
+        self.activeNetwork?.network(receive: response, completionHandler)
     }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        print("didReceive data")
+        self.activeNetwork?.network(receiveData: data)
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        print("didCompleteWithError")
+        self.activeNetwork?.network(receiveCompletion: error)
     }
 }
